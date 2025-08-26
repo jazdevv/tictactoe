@@ -16,7 +16,7 @@ public class GameController {
     }
 
     @PostMapping("/create")
-    public Game createGame() throws Exception {
+    public Game createGame() {
         return gameService.startOrJoinGame();
     }
 }

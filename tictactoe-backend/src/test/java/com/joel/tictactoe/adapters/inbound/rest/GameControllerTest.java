@@ -21,7 +21,7 @@ class GameControllerTest {
     }
 
     @Test
-    void createGame_shouldReturnGame() throws Exception {
+    void createGame_shouldReturnGame() {
         // given
         Game mockGame = GameFactory.createMatchmakingGame();
         when(gameService.startOrJoinGame()).thenReturn(mockGame);
@@ -36,7 +36,7 @@ class GameControllerTest {
     }
 
     @Test
-    void createGame_shouldThrowException_whenServiceThrows() throws Exception {
+    void createGame_shouldThrowException_whenServiceThrows() {
         // given
         when(gameService.startOrJoinGame()).thenThrow(new RuntimeException("Service failed"));
 
