@@ -17,13 +17,13 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void handleAllExceptions_shouldReturnInternalServerErrorAndGenericMessage() {
-        // Given
+        // given
         Exception testException = new RuntimeException("Test exception");
 
-        // When
+        // when
         ResponseEntity<String> response = exceptionHandler.handleAllExceptions(testException);
 
-        // Then
+        // then
         assertNotNull(response);
         assertEquals(500, response.getStatusCodeValue());
         assertEquals("Unexpected issue occurred", response.getBody());
