@@ -2,6 +2,7 @@ package com.joel.tictactoe.adapters.inbound.rest;
 
 import com.joel.tictactoe.adapters.inbound.rest.dto.CreateGameResponse;
 import com.joel.tictactoe.adapters.inbound.rest.dto.GameStatusResponse;
+import com.joel.tictactoe.adapters.inbound.rest.exception.ExceptionMessages;
 import com.joel.tictactoe.application.service.GameService;
 import com.joel.tictactoe.domain.factory.GameFactory;
 import com.joel.tictactoe.domain.model.Game;
@@ -53,7 +54,7 @@ class GameControllerTest {
     void getGameStatus_shouldThrowException_whenGameIdIsNull() {
         // when & then
         Exception exception = assertThrows(Exception.class, () -> gameController.getGameStatus(null));
-        assertEquals("gameId parameter is required", exception.getMessage());
+        assertEquals(ExceptionMessages.GAME_ID_REQUIRED, exception.getMessage());
         verify(gameService, never()).getGame(anyString());
     }
 
@@ -65,7 +66,7 @@ class GameControllerTest {
 
         // when & then
         Exception exception = assertThrows(Exception.class, () -> gameController.getGameStatus(gameId));
-        assertEquals("Game not found", exception.getMessage());
+        assertEquals(ExceptionMessages.GAME_NOT_FOUND, exception.getMessage());
         verify(gameService, times(1)).getGame(gameId);
     }
 
@@ -79,6 +80,7 @@ class GameControllerTest {
 
         // when
         GameStatusResponse result = gameController.getGameStatus(gameId);
+
         // then
         assertNotNull(result, "The result should not be null");
         assertEquals(mockGame.getStatus(), result.getStatus(), "The returned status should match the mock game status");
