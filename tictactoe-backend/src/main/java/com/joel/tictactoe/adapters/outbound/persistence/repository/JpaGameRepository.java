@@ -45,4 +45,9 @@ public class JpaGameRepository implements GameRepository {
                 .findFirst()
                 .map(GameMapper::toDomain);
     }
+
+    @Override
+    public void deleteAll() {
+        springDataGameRepository.deleteAll();
+        }
 }

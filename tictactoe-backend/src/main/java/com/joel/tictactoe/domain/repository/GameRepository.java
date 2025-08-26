@@ -11,4 +11,5 @@ public interface GameRepository {
     Optional<Game> findById(String id);
     List<Game> findAll();
     Optional<Game> findFirstByStatus(GameStatus status);
+    void deleteAll();
 }
