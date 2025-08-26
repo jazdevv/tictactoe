@@ -1,5 +1,7 @@
 package com.joel.tictactoe.adapters.inbound.rest;
 
+import com.joel.tictactoe.adapters.inbound.rest.dto.CreateGameResponse;
+import com.joel.tictactoe.adapters.inbound.rest.dto.GameStatusResponse;
 import com.joel.tictactoe.application.service.GameService;
 import com.joel.tictactoe.domain.factory.GameFactory;
 import com.joel.tictactoe.domain.model.Game;
@@ -24,14 +26,15 @@ class GameControllerTest {
     void createGame_shouldReturnGame() {
         // given
         Game mockGame = GameFactory.createMatchmakingGame();
+        mockGame.setId("test-id");
         when(gameService.startOrJoinGame()).thenReturn(mockGame);
 
         // when
-        Game result = gameController.createGame();
+        CreateGameResponse result = gameController.createGame();
 
         // then
-        assertNotNull(result);
-        assertEquals(mockGame, result);
+        assertNotNull(result, "The result should not be null");
+        assertEquals(mockGame.getId(), result.getMatchId(), "The returned game ID should match the mock game ID");
         verify(gameService, times(1)).startOrJoinGame();
     }
 
@@ -44,5 +47,43 @@ class GameControllerTest {
         Exception exception = assertThrows(RuntimeException.class, () -> gameController.createGame());
         assertEquals("Service failed", exception.getMessage());
         verify(gameService, times(1)).startOrJoinGame();
+    }
+
+    @Test
+    void getGameStatus_shouldThrowException_whenGameIdIsNull() {
+        // when & then
+        Exception exception = assertThrows(Exception.class, () -> gameController.getGameStatus(null));
+        assertEquals("gameId parameter is required", exception.getMessage());
+        verify(gameService, never()).getGame(anyString());
+    }
+
+    @Test
+    void getGameStatus_shouldThrowException_whenGameNotFound() throws Exception {
+        // given
+        String gameId = "non-existent-id";
+        when(gameService.getGame(gameId)).thenReturn(java.util.Optional.empty());
+
+        // when & then
+        Exception exception = assertThrows(Exception.class, () -> gameController.getGameStatus(gameId));
+        assertEquals("Game not found", exception.getMessage());
+        verify(gameService, times(1)).getGame(gameId);
+    }
+
+    @Test
+    void getGameStatus_shouldReturnGameStatus_whenGameExists() throws Exception {
+        // given
+        String gameId = "existing-id";
+        Game mockGame = GameFactory.createMatchmakingGame();
+        mockGame.setId(gameId);
+        when(gameService.getGame(gameId)).thenReturn(java.util.Optional.of(mockGame));
+
+        // when
+        GameStatusResponse result = gameController.getGameStatus(gameId);
+        // then
+        assertNotNull(result, "The result should not be null");
+        assertEquals(mockGame.getStatus(), result.getStatus(), "The returned status should match the mock game status");
+        assertEquals(mockGame.getCurrentTurn(), result.getCurrentTurn(), "The returned current turn should match the mock game current turn");
+        assertEquals(mockGame.getWinner(), result.getWinner(), "The returned winner should match the mock game winner");
+        verify(gameService, times(1)).getGame(gameId);
     }
 }

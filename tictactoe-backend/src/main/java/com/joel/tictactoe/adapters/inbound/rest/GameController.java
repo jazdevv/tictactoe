@@ -1,9 +1,16 @@
 package com.joel.tictactoe.adapters.inbound.rest;
 
+import com.joel.tictactoe.adapters.inbound.rest.dto.CreateGameResponse;
+import com.joel.tictactoe.adapters.inbound.rest.dto.GameStatusResponse;
+import com.joel.tictactoe.adapters.inbound.rest.exception.CustomException;
 import com.joel.tictactoe.application.service.GameService;
 import com.joel.tictactoe.domain.model.Game;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Optional;
 
 @RestController
 public class GameController {
@@ -15,8 +22,39 @@ public class GameController {
         this.gameService = gameService;
     }
 
+    /**
+     * Create a new game or join an existing one.
+     * @return
+     */
     @PostMapping("/create")
-    public Game createGame() {
-        return gameService.startOrJoinGame();
+    public CreateGameResponse createGame() {
+        Game game = gameService.startOrJoinGame();
+        return new CreateGameResponse(game.getId());
+    }
+
+    /**
+     * Get the status of a game by its ID.
+     * @param gameId The ID of the game.
+     * @return The status of the game.
+     * @throws Exception if the game is not found.
+     */
+    @GetMapping("/status")
+    public GameStatusResponse getGameStatus(@RequestParam(required = false) String gameId) throws Exception {
+        if (gameId == null) {
+            throw new CustomException("gameId parameter is required");
+        }
+
+        Optional<Game> game = gameService.getGame(gameId);
+
+        if(game.isEmpty()){
+            throw new CustomException("Game not found");
+        }else{
+            Game g = game.get();
+            return new GameStatusResponse(
+                g.getStatus(),
+                    g.getCurrentTurn(),
+                    g.getWinner()
+            );
+        }
     }
 }
