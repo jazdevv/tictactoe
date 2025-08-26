@@ -8,12 +8,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 @DataJpaTest
 public class JpaGameRepositoryIT {
+
     @Autowired
     private SpringDataGameRepository springDataGameRepository;
 
@@ -26,7 +28,7 @@ public class JpaGameRepositoryIT {
     }
 
     @Test
-    void testSaveGameAndFindById(){
+    void testSaveGameAndFindById() {
         // given
         Game game = GameFactory.createMatchmakingGame();
 
@@ -35,19 +37,19 @@ public class JpaGameRepositoryIT {
 
         // then
         Optional<Game> retrievedGame = jpaGameRepository.findById(game.getId());
-        assert retrievedGame.isPresent();
-        assert retrievedGame.get().getId().equals(game.getId());
-        assert retrievedGame.get().getStatus().equals(game.getStatus());
-        assert retrievedGame.get().getCreatedAt().equals(game.getCreatedAt());
-        assert game.getStatus().equals(GameStatus.MATCHMAKING);
+
+        assertTrue(retrievedGame.isPresent(), "Game should be found after saving");
+        assertEquals(game.getId(), retrievedGame.get().getId(), "Retrieved game ID should match saved game ID");
+        assertEquals(game.getStatus(), retrievedGame.get().getStatus(), "Retrieved game status should match saved status");
+        assertEquals(game.getCreatedAt(), retrievedGame.get().getCreatedAt(), "Retrieved game createdAt should match saved createdAt");
+        assertEquals(GameStatus.MATCHMAKING, game.getStatus(), "Game should start with MATCHMAKING status");
     }
 
     @Test
-    void testFindAll(){
-
+    void testFindAll() {
         // given
         List<Game> initialGames = jpaGameRepository.findAll();
-        assert initialGames.isEmpty();
+        assertTrue(initialGames.isEmpty(), "Repository should be empty initially");
 
         Game game1 = GameFactory.createMatchmakingGame();
         Game game2 = GameFactory.createMatchmakingGame();
@@ -58,7 +60,7 @@ public class JpaGameRepositoryIT {
         List<Game> games = jpaGameRepository.findAll();
 
         // then
-        assert games.size() == 2;
+        assertEquals(2, games.size(), "Repository should contain exactly 2 games after saving two");
     }
 
     @Test
@@ -73,8 +75,8 @@ public class JpaGameRepositoryIT {
         Optional<Game> matchmakingGame = jpaGameRepository.findFirstByStatus(GameStatus.MATCHMAKING);
 
         // then
-        assert matchmakingGame.isPresent();
-        assert matchmakingGame.get().getStatus() == GameStatus.MATCHMAKING;
-        assert matchmakingGame.get().getId().equals(game1.getId());
+        assertTrue(matchmakingGame.isPresent(), "There should be a game with MATCHMAKING status");
+        assertEquals(GameStatus.MATCHMAKING, matchmakingGame.get().getStatus(), "Retrieved game status should be MATCHMAKING");
+        assertEquals(game1.getId(), matchmakingGame.get().getId(), "First saved game should be retrieved by findFirstByStatus");
     }
 }

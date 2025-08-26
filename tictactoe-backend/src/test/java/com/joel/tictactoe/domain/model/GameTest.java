@@ -3,7 +3,10 @@ package com.joel.tictactoe.domain.model;
 import com.joel.tictactoe.domain.factory.GameFactory;
 import com.joel.tictactoe.domain.value.GamePlayers;
 import com.joel.tictactoe.domain.value.GameStatus;
+import com.joel.tictactoe.domain.value.GameWinner;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class GameTest {
 
@@ -11,13 +14,13 @@ public class GameTest {
     void testStartGame(){
         // given
         Game game = GameFactory.createMatchmakingGame();
-        assert game.getStatus() == GameStatus.MATCHMAKING;
+        assertEquals(GameStatus.MATCHMAKING, game.getStatus(), "Initial game status should be MATCHMAKING");
 
         // when
         game.start();
 
         // then
-        assert game.getStatus() == GameStatus.IN_PROGRESS;
+        assertEquals(GameStatus.IN_PROGRESS, game.getStatus(), "Game status should be IN_PROGRESS after starting");
     }
 
     @Test
@@ -25,19 +28,19 @@ public class GameTest {
         // given
         Game game = GameFactory.createMatchmakingGame();
         game.start();
-        assert game.getCurrentTurn().equals(GamePlayers.X);
+        assertEquals(GamePlayers.X, game.getCurrentTurn(), "First turn should be assigned to player X");
 
         // when
         game.switchTurn();
 
         // then
-        assert game.getCurrentTurn().equals(GamePlayers.O);
+        assertEquals(GamePlayers.O, game.getCurrentTurn(), "Turn should switch to player O");
 
         // when
         game.switchTurn();
 
         // then
-        assert game.getCurrentTurn().equals(GamePlayers.X);
+        assertEquals(GamePlayers.X, game.getCurrentTurn(), "Turn should switch back to player X");
     }
 
     @Test
@@ -45,13 +48,13 @@ public class GameTest {
         // given
         Game game = GameFactory.createMatchmakingGame();
         game.start();
-        assert(game.getStatus() == GameStatus.IN_PROGRESS);
+        assertEquals(GameStatus.IN_PROGRESS, game.getStatus(), "Game should be IN_PROGRESS before ending");
 
         // when
-        game.end(com.joel.tictactoe.domain.value.GameWinner.X);
+        game.end(GameWinner.X);
 
         // then
-        assert game.getStatus() == GameStatus.FINISHED;
-        assert game.getWinner() == com.joel.tictactoe.domain.value.GameWinner.X;
+        assertEquals(GameStatus.FINISHED, game.getStatus(), "Game status should be FINISHED after ending");
+        assertEquals(GameWinner.X, game.getWinner(), "Winner should be assigned correctly");
     }
 }
