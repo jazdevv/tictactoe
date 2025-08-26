@@ -1,5 +1,6 @@
 package com.joel.tictactoe.adapters.inbound.rest;
 
+import com.joel.tictactoe.adapters.inbound.rest.exception.CustomException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,22 @@ class GlobalExceptionHandlerTest {
 
         // then
         assertNotNull(response);
-        assertEquals(500, response.getStatusCodeValue());
-        assertEquals("Unexpected issue occurred", response.getBody());
+        assertEquals(500, response.getStatusCode().value(), "Status code should be 500");
+        assertEquals("Unexpected issue occurred", response.getBody(), "Response body should match the generic message");
+    }
+
+    @Test
+    void handleCustomException_shouldReturnBadRequestAndExceptionMessage() {
+        // given
+        String errorMessage = "Custom error occurred";
+        CustomException customException = new CustomException(errorMessage);
+
+        // when
+        ResponseEntity<String> response = exceptionHandler.handleCustomException(customException);
+
+        // then
+        assertNotNull(response, "Response should not be null");
+        assertEquals(400, response.getStatusCode().value(), "Status code should be 400");
+        assertEquals(errorMessage, response.getBody(), "Response body should match the exception message");
     }
 }

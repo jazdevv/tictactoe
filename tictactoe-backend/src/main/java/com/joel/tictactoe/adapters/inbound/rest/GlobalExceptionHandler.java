@@ -1,5 +1,6 @@
 package com.joel.tictactoe.adapters.inbound.rest;
 
+import com.joel.tictactoe.adapters.inbound.rest.exception.CustomException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -30,5 +31,22 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Unexpected issue occurred");
+    }
+
+    /**
+     * Handle custom exceptions.
+     *
+     * @param ex the custom exception
+     * @return the exception message
+     */
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<String> handleCustomException(CustomException ex) {
+        // Log full stack trace
+        log.error("Custom exception caught: ", ex);
+
+        // Return the exception message to client
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ex.getMessage());
     }
 }
