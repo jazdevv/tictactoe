@@ -1,0 +1,182 @@
+package com.joel.tictactoe.domain.model;
+
+import com.joel.tictactoe.exception.ExceptionMessages;
+import com.joel.tictactoe.domain.value.BoardConfig;
+import com.joel.tictactoe.domain.value.GamePlayers;
+import com.joel.tictactoe.domain.value.GameStatus;
+import com.joel.tictactoe.domain.value.GameWinner;
+import com.joel.tictactoe.util.LogMessages;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+@Slf4j
+@Getter
+@Setter
+public class Game {
+    /**  * The player who always starts first. */
+    private static final GamePlayers FIRST_PLAYER = GamePlayers.X;
+
+    private String id;
+
+    private GameStatus status;
+
+    private GameWinner winner;
+
+    private GamePlayers currentTurn;
+
+    private LocalDateTime createdAt;
+
+    private List<Movement> movements = new ArrayList<>();
+
+
+    public Game() {}
+
+    /**
+     * Starts the game by setting the status to IN_PROGRESS
+     * and assigning the first turn to the first player.
+     */
+    public void start() {
+        this.status = GameStatus.IN_PROGRESS;
+        this.currentTurn = FIRST_PLAYER;
+        log.info(LogMessages.GAME_STARTED, this.id);
+    }
+
+    /**
+     * Switches the current turn to the other player.
+     */
+    public void switchTurn() {
+        if (currentTurn == GamePlayers.X) {
+            currentTurn = GamePlayers.O;
+        } else {
+            currentTurn = GamePlayers.X;
+        }
+    }
+
+    /**
+     * Ends the game by setting the status to FINISHED and
+     * assigning the winner.
+     *
+     * @param winner The player who won the game.
+     */
+    public void end(GameWinner winner) {
+        this.status = GameStatus.FINISHED;
+        this.winner = winner;
+    }
+
+    /**
+     * Makes a move for the current player at the given coordinates.
+     *
+     * @param x The x coordinate of the move.
+     * @param y The y coordinate of the move.
+     */
+    public void move(int x, int y) {
+        if(this.status != GameStatus.IN_PROGRESS){
+            throw new IllegalStateException(ExceptionMessages.MOVE_NOT_ALLOWED_WHEN_GAME_NOT_IN_PROGRESS);
+        }
+
+        Movement movement = new Movement();
+        movement.setGameId(this.id);
+        movement.setPlayerId(this.currentTurn);
+        movement.setX(x);
+        movement.setY(y);
+        movement.setCreatedAt(LocalDateTime.now());
+
+        addMovement(movement);
+        log.info(LogMessages.MOVEMENT_ADDED, movement, this.currentTurn);
+    }
+
+    /**
+     * Adds a movement to the game and switches the turn.
+     *
+     * @param movement The movement to add.
+     */
+    public void addMovement(Movement movement) {
+        if(movement.getX() < BoardConfig.BOARD_MIN_POSITION
+                || movement.getX() > BoardConfig.BOARD_MAX_POSITION
+                || movement.getY() < BoardConfig.BOARD_MIN_POSITION
+                || movement.getY() > BoardConfig.BOARD_MAX_POSITION) {
+            log.info(LogMessages.INVALID_MOVE, movement.getX(), movement.getY(), movement.getPlayerId(), this.id);
+            throw new IllegalArgumentException(ExceptionMessages.INVALID_MOVE_POSITION);
+        }
+
+        boolean exists = hasMovementAt(movement.getX(), movement.getY());
+        if (exists) {
+            log.info(LogMessages.INVALID_MOVE, movement.getX(), movement.getY(), movement.getPlayerId(), this.id);
+            throw new IllegalArgumentException(ExceptionMessages.POSITION_ALREADY_TAKEN);
+        }
+
+        movements.add(movement);
+
+        boolean playerWin = checkPlayerWin(movement.getPlayerId());
+        if (playerWin) {
+            end(movement.getPlayerId() == GamePlayers.X ? GameWinner.X : GameWinner.O);
+            log.info(LogMessages.GAME_WON, this.id, this.winner);
+        }else{
+            if(movements.size() == BoardConfig.MAX_MOVEMENTS){
+                end(GameWinner.DRAW);
+                log.info(LogMessages.GAME_DRAW);
+            }else{
+                // Switch turn only if the game is not finished
+                switchTurn();
+            }
+        }
+    }
+
+    /**
+     * Checks if there is a movement at the given coordinates.
+     *
+     * @param x The x coordinate.
+     * @param y The y coordinate.
+     * @return true if there is a movement at the given coordinates, false otherwise.
+     */
+    public boolean hasMovementAt(int x, int y) {
+        return movements.stream().anyMatch(m -> m.getX() == x && m.getY() == y);
+    }
+
+    /**
+     * Checks if the game is currently active (in progress).
+     *
+     * @return true if the game is in progress, false otherwise.
+     */
+    public boolean isActive() {
+        return this.status == GameStatus.IN_PROGRESS;
+    }
+
+    /**
+     * Checks if the given player has won by having all movements
+     * in a row, column, or diagonal.
+     *
+     * @param player The player to check.
+     * @return true if the player has won, false otherwise.
+     */
+    public boolean checkPlayerWin(GamePlayers player) {
+        // Filter movements for this player
+        List<Movement> playerMoves = movements.stream()
+                .filter(m -> m.getPlayerId() == player)
+                .toList();
+
+        // Check rows and columns
+        for (int i = 1; i <= 3; i++) {
+            final int index = i;
+            boolean row = playerMoves.stream().filter(m -> m.getY() == index).count() == 3;
+            boolean col = playerMoves.stream().filter(m -> m.getX() == index).count() == 3;
+            if (row || col) return true;
+        }
+
+        // Check diagonals
+        boolean diagonal1 = playerMoves.stream().anyMatch(m -> m.getX() == 1 && m.getY() == 1) &&
+                playerMoves.stream().anyMatch(m -> m.getX() == 2 && m.getY() == 2) &&
+                playerMoves.stream().anyMatch(m -> m.getX() == 3 && m.getY() == 3);
+
+        boolean diagonal2 = playerMoves.stream().anyMatch(m -> m.getX() == 1 && m.getY() == 3) &&
+                playerMoves.stream().anyMatch(m -> m.getX() == 2 && m.getY() == 2) &&
+                playerMoves.stream().anyMatch(m -> m.getX() == 3 && m.getY() == 1);
+
+        return diagonal1 || diagonal2;
+    }
+}
