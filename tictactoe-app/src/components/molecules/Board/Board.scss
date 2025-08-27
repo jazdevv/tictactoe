@@ -1,0 +1,32 @@
+.board {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 240px;
+
+  .board-row {
+    display: flex;
+    gap: 0;
+  }
+
+  &.blocked {
+    background-color: rgba(200, 200, 200, 0.3); // board más gris
+    pointer-events: none; // evita clicks en las celdas
+
+    .overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(50, 50, 50, 0.85); // fondo oscuro
+      color: #fff;
+      padding: 1rem 2rem;
+      border-radius: 0.5rem;
+      font-size: 1.25rem;
+      font-weight: bold;
+      text-align: center;
+      z-index: 10;
+    }
+  }
+}

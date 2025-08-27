@@ -1,0 +1,17 @@
+.text {
+  &.base {
+    color: var(--neutral-90);
+  }
+
+  &.primary {
+    color: var(--primary-color);
+  }
+
+  &.md {
+    font-size: 1rem;
+  }
+
+  &.xl {
+    font-size: 1.25rem;
+  }
+}

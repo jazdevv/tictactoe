@@ -1,4 +1,5 @@
 import React from "react";
+import "./Cell.scss";
 
 interface CellProps {
   x: number;
@@ -15,21 +16,10 @@ const Cell: React.FC<CellProps> = ({ x, y, value, clickable, onClick }) => {
     }
   };
 
+  const classes = `cell ${value ? "filled" : ""} ${clickable && !value ? "clickable" : ""}`;
+
   return (
-    <div
-      onClick={handleClick}
-      style={{
-        width: "80px",
-        height: "80px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        border: "1px solid #333",
-        fontSize: "2rem",
-        cursor: value || !clickable ? "default" : "pointer",
-        userSelect: "none",
-      }}
-    >
+    <div onClick={handleClick} className={classes}>
       {value}
     </div>
   );

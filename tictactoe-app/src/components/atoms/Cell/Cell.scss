@@ -1,0 +1,22 @@
+.cell {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #333;
+  font-size: 2rem;
+  transition: background 0.2s;
+
+  &.clickable {
+    cursor: pointer;
+
+    &:hover {
+      background: #f0f0f0;
+    }
+  }
+
+  &.filled {
+    cursor: default;
+  }
+}

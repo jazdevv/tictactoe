@@ -1,8 +1,8 @@
 import { useState } from "react";
 import "./App.scss";
-import Text from "@/components/atoms/Text";
-import Board from "@/components/molecules/Board";
-import Button from "@/components/atoms/Button";
+import Text from "@/components/atoms/Text/Text";
+import Board from "@/components/molecules/Board/Board";
+import Button from "@/components/atoms/Button/Button";
 
 type Move = {
   playerId: "X" | "O";
@@ -37,7 +37,7 @@ function App() {
     setTimeout(() => {
       setSearchingGame(false);
       setGameId("123");
-    }, 2000);
+    }, 200);
   };
 
   const gameFound = gameId !== null;
@@ -52,7 +52,7 @@ function App() {
 {gameFound ? (
         <>
           <Text value="Hello, World!" type="primary" />
-          <Board moves={moves} clickable={true} onMove={handleMove} />
+          <Board moves={moves} clickable={true} onMove={handleMove} blocked={true}/>
         </>
       ) : (
         <Button value="Search game" onClick={handleSearchGame} />
