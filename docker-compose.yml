@@ -19,6 +19,8 @@ services:
       dockerfile: Dockerfile
     env_file:
       - .env
+    volumes:
+      - ./tictactoe-backend/src/main/resources/application.properties:/app/application.properties
     depends_on:
       - db
     ports:
