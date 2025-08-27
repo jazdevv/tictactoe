@@ -2,9 +2,8 @@ package com.joel.tictactoe.adapters.inbound.rest;
 
 import com.joel.tictactoe.adapters.inbound.rest.dto.*;
 import com.joel.tictactoe.application.usecase.GetGameStatusUseCase;
-import com.joel.tictactoe.application.service.GameService;
 import com.joel.tictactoe.application.usecase.MakeMoveUseCase;
-import com.joel.tictactoe.domain.model.Game;
+import com.joel.tictactoe.application.usecase.StartOrJoinGameUseCase;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,18 +11,18 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class GameController {
 
-    private final GameService gameService;
     private final MakeMoveUseCase makeMoveUseCase;
     private final GetGameStatusUseCase getGameStatusUseCase;
+    private final StartOrJoinGameUseCase startOrJoinGameUseCase;
 
     public GameController(
-            GameService gameService,
             MakeMoveUseCase makeMoveUseCase,
-            GetGameStatusUseCase getGameStatusUseCase)
+            GetGameStatusUseCase getGameStatusUseCase,
+            StartOrJoinGameUseCase startOrJoinGameUseCase)
     {
-        this.gameService = gameService;
         this.makeMoveUseCase = makeMoveUseCase;
         this.getGameStatusUseCase = getGameStatusUseCase;
+        this.startOrJoinGameUseCase = startOrJoinGameUseCase;
     }
 
     /**
@@ -33,8 +32,8 @@ public class GameController {
      */
     @PostMapping("/create")
     public ResponseEntity<CreateGameResponse> createGame() {
-        Game game = gameService.startOrJoinGame();
-        return ResponseEntity.ok(new CreateGameResponse(game.getId()));
+        CreateGameResponse response = startOrJoinGameUseCase.execute();
+        return ResponseEntity.ok(response);
     }
 
     /**
