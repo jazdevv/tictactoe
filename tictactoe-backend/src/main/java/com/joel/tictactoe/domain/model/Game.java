@@ -118,4 +118,13 @@ public class Game {
     public boolean hasMovementAt(int x, int y) {
         return movements.stream().anyMatch(m -> m.getX() == x && m.getY() == y);
     }
+
+    /**
+     * Checks if the game is currently active (in progress).
+     *
+     * @return true if the game is in progress, false otherwise.
+     */
+    public boolean isActive() {
+        return this.status == GameStatus.IN_PROGRESS;
+    }
 }

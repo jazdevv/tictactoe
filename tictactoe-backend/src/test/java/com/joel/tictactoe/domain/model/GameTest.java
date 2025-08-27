@@ -156,4 +156,36 @@ public class GameTest {
         assertTrue(game.hasMovementAt(1, 1), "There should be a movement at position (1,1)");
         assertFalse(game.hasMovementAt(2, 2), "There should not be a movement at position (2,2)");
     }
+
+    @Test
+    void isActive_shouldReturnTrueWhenGameInProgress(){
+        // given
+        Game game = GameFactory.createMatchmakingGame();
+        assertFalse(game.isActive(), "Game should not be active in MATCHMAKING status");
+
+        // when
+        game.start();
+
+        // then
+        assertTrue(game.isActive(), "Game should be active in IN_PROGRESS status");
+
+        // when
+        game.end(GameWinner.X);
+
+        // then
+        assertFalse(game.isActive(), "Game should not be active in FINISHED status");
+    }
+
+    @Test
+    void isActive_shouldReturnFalseWhenGameNotInProgress(){
+        // given
+        Game game = GameFactory.createMatchmakingGame();
+        assertFalse(game.isActive(), "Game should not be active in MATCHMAKING status");
+
+        // when
+        game.end(GameWinner.X);
+
+        // then
+        assertFalse(game.isActive(), "Game should not be active in FINISHED status");
+    }
 }
