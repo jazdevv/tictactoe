@@ -1,10 +1,8 @@
 package com.joel.tictactoe.application.service;
 
 import com.joel.tictactoe.domain.model.Game;
-import com.joel.tictactoe.domain.factory.GameFactory;
 import com.joel.tictactoe.domain.value.GameStatus;
 import com.joel.tictactoe.domain.repository.GameRepository;
-import com.joel.tictactoe.util.LogMessages;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -22,28 +20,6 @@ public class GameService {
 
     public GameService(GameRepository gameRepository) {
         this.gameRepository = gameRepository;
-    }
-
-    /**
-     * Starts a new game or joins an existing matchmaking game.
-     *
-     * @return The game that the player has joined or started.
-     */
-    public Game startOrJoinGame() {
-        Optional<Game> matchmakingGame = gameRepository.findFirstByStatus(GameStatus.MATCHMAKING);
-        Game game;
-        log.info(LogMessages.ENTERING_MATHCHMAKING);
-
-        if (matchmakingGame.isPresent()) {
-            // Join the existing matchmaking game
-            game = matchmakingGame.get();
-            game.start();
-        }else{
-            // No matchmaking game available, create a new game
-            game = GameFactory.createMatchmakingGame();
-        }
-
-        return gameRepository.save(game);
     }
 
     /**
@@ -80,5 +56,15 @@ public class GameService {
      */
     public void deleteAllGames() {
         gameRepository.deleteAll();
+    }
+
+    /**
+     * Finds the first game with the specified status.
+     *
+     * @param status The status to search for.
+     * @return An Optional containing the first game with the specified status, or empty if none found.
+     */
+    public Optional<Game> findFirstByStatus(GameStatus status) {
+        return gameRepository.findFirstByStatus(status);
     }
 }
