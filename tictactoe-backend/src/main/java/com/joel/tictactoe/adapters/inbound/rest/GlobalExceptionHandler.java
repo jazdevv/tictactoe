@@ -39,7 +39,7 @@ public class GlobalExceptionHandler {
      * @param ex the custom exception
      * @return the exception message
      */
-    @ExceptionHandler(CustomException.class)
+    @ExceptionHandler({CustomException.class, IllegalStateException.class, IllegalArgumentException.class})
     public ResponseEntity<String> handleCustomException(CustomException ex) {
         // Log full stack trace
         log.error("Custom exception caught: ", ex);
