@@ -1,4 +1,4 @@
-package com.joel.tictactoe.adapters.inbound.rest.exception;
+package com.joel.tictactoe.exception;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

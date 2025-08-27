@@ -1,6 +1,6 @@
 package com.joel.tictactoe.domain.model;
 
-import com.joel.tictactoe.adapters.inbound.rest.exception.ExceptionMessages;
+import com.joel.tictactoe.exception.ExceptionMessages;
 import com.joel.tictactoe.domain.value.BoardPositions;
 import com.joel.tictactoe.domain.value.GamePlayers;
 import com.joel.tictactoe.domain.value.GameStatus;

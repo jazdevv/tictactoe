@@ -2,8 +2,8 @@ package com.joel.tictactoe.application.usecase;
 
 import com.joel.tictactoe.adapters.inbound.rest.dto.MakeMovementRequest;
 import com.joel.tictactoe.adapters.inbound.rest.dto.MakeMovementResponse;
-import com.joel.tictactoe.adapters.inbound.rest.exception.CustomException;
-import com.joel.tictactoe.adapters.inbound.rest.exception.ExceptionMessages;
+import com.joel.tictactoe.exception.CustomException;
+import com.joel.tictactoe.exception.ExceptionMessages;
 import com.joel.tictactoe.domain.model.Game;
 import com.joel.tictactoe.domain.repository.GameRepository;
 import com.joel.tictactoe.domain.value.GamePlayers;
