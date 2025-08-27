@@ -1,7 +1,6 @@
 package com.joel.tictactoe.application.usecase;
 
 import com.joel.tictactoe.adapters.inbound.rest.dto.MakeMovementRequest;
-import com.joel.tictactoe.adapters.inbound.rest.dto.MakeMovementResponse;
 import com.joel.tictactoe.exception.CustomException;
 import com.joel.tictactoe.exception.ExceptionMessages;
 import com.joel.tictactoe.domain.model.Game;
@@ -18,12 +17,12 @@ public class MakeMoveUseCase {
         this.gameRepository = gameRepository;
     }
 
-    public MakeMovementResponse execute(MakeMovementRequest request) {
-        return execute(request.getMatchId(), request.getPlayerId(),
+    public void execute(MakeMovementRequest request) {
+        execute(request.getMatchId(), request.getPlayerId(),
                 request.getSquare().getX(), request.getSquare().getY());
     }
 
-    public MakeMovementResponse execute(String gameId, GamePlayers playerId, int x, int y) {
+    public void execute(String gameId, GamePlayers playerId, int x, int y) throws CustomException {
         Game game = gameRepository.findById(gameId).orElseThrow(() -> new CustomException(ExceptionMessages.GAME_NOT_FOUND));
 
         // Validate if the game is active
@@ -40,6 +39,5 @@ public class MakeMoveUseCase {
 
         gameRepository.save(game);
 
-        return new MakeMovementResponse();
     }
 }
