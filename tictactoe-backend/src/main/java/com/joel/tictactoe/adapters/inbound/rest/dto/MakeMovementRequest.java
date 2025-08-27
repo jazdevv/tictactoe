@@ -1,6 +1,6 @@
 package com.joel.tictactoe.adapters.inbound.rest.dto;
 
-import com.joel.tictactoe.domain.value.BoardPositions;
+import com.joel.tictactoe.domain.value.BoardConfig;
 import com.joel.tictactoe.domain.value.GamePlayers;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,12 +26,12 @@ public class MakeMovementRequest {
     @Setter
     public static class Square {
 
-        @Min(value = BoardPositions.BOARD_MIN_POSITION, message = "{movement.square.x.range}")
-        @Max(value = BoardPositions.BOARD_MAX_POSITION, message = "{movement.square.x.range}")
+        @Min(value = BoardConfig.BOARD_MIN_POSITION, message = "{movement.square.x.range}")
+        @Max(value = BoardConfig.BOARD_MAX_POSITION, message = "{movement.square.x.range}")
         private int x;
 
-        @Min(value = BoardPositions.BOARD_MIN_POSITION, message = "{movement.square.y.range}")
-        @Max(value = BoardPositions.BOARD_MAX_POSITION, message = "{movement.square.y.range}")
+        @Min(value = BoardConfig.BOARD_MIN_POSITION, message = "{movement.square.y.range}")
+        @Max(value = BoardConfig.BOARD_MAX_POSITION, message = "{movement.square.y.range}")
         private int y;
     }
 }

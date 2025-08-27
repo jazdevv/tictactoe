@@ -1,7 +1,7 @@
 package com.joel.tictactoe.domain.model;
 
 import com.joel.tictactoe.exception.ExceptionMessages;
-import com.joel.tictactoe.domain.value.BoardPositions;
+import com.joel.tictactoe.domain.value.BoardConfig;
 import com.joel.tictactoe.domain.value.GamePlayers;
 import com.joel.tictactoe.domain.value.GameStatus;
 import com.joel.tictactoe.domain.value.GameWinner;
@@ -92,10 +92,10 @@ public class Game {
      * @param movement The movement to add.
      */
     public void addMovement(Movement movement) {
-        if(movement.getX() < BoardPositions.BOARD_MIN_POSITION
-                || movement.getX() > BoardPositions.BOARD_MAX_POSITION
-                || movement.getY() < BoardPositions.BOARD_MIN_POSITION
-                || movement.getY() > BoardPositions.BOARD_MAX_POSITION) {
+        if(movement.getX() < BoardConfig.BOARD_MIN_POSITION
+                || movement.getX() > BoardConfig.BOARD_MAX_POSITION
+                || movement.getY() < BoardConfig.BOARD_MIN_POSITION
+                || movement.getY() > BoardConfig.BOARD_MAX_POSITION) {
             throw new IllegalArgumentException(ExceptionMessages.INVALID_MOVE_POSITION);
         }
 
@@ -105,7 +105,18 @@ public class Game {
         }
 
         movements.add(movement);
-        switchTurn();
+
+        boolean playerWin = checkPlayerWin(movement.getPlayerId());
+        if (playerWin) {
+            end(movement.getPlayerId() == GamePlayers.X ? GameWinner.X : GameWinner.O);
+        }else{
+            if(movements.size() == BoardConfig.MAX_MOVEMENTS){
+                end(GameWinner.DRAW);
+            }else{
+                // Switch turn only if the game is not finished
+                switchTurn();
+            }
+        }
     }
 
     /**
@@ -126,5 +137,38 @@ public class Game {
      */
     public boolean isActive() {
         return this.status == GameStatus.IN_PROGRESS;
+    }
+
+    /**
+     * Checks if the given player has won by having all movements
+     * in a row, column, or diagonal.
+     *
+     * @param player The player to check.
+     * @return true if the player has won, false otherwise.
+     */
+    public boolean checkPlayerWin(GamePlayers player) {
+        // Filter movements for this player
+        List<Movement> playerMoves = movements.stream()
+                .filter(m -> m.getPlayerId() == player)
+                .toList();
+
+        // Check rows and columns
+        for (int i = 1; i <= 3; i++) {
+            final int index = i;
+            boolean row = playerMoves.stream().filter(m -> m.getY() == index).count() == 3;
+            boolean col = playerMoves.stream().filter(m -> m.getX() == index).count() == 3;
+            if (row || col) return true;
+        }
+
+        // Check diagonals
+        boolean diagonal1 = playerMoves.stream().anyMatch(m -> m.getX() == 1 && m.getY() == 1) &&
+                playerMoves.stream().anyMatch(m -> m.getX() == 2 && m.getY() == 2) &&
+                playerMoves.stream().anyMatch(m -> m.getX() == 3 && m.getY() == 3);
+
+        boolean diagonal2 = playerMoves.stream().anyMatch(m -> m.getX() == 1 && m.getY() == 3) &&
+                playerMoves.stream().anyMatch(m -> m.getX() == 2 && m.getY() == 2) &&
+                playerMoves.stream().anyMatch(m -> m.getX() == 3 && m.getY() == 1);
+
+        return diagonal1 || diagonal2;
     }
 }

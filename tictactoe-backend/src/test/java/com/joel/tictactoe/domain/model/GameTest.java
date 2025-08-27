@@ -2,7 +2,7 @@ package com.joel.tictactoe.domain.model;
 
 import com.joel.tictactoe.exception.ExceptionMessages;
 import com.joel.tictactoe.domain.factory.GameFactory;
-import com.joel.tictactoe.domain.value.BoardPositions;
+import com.joel.tictactoe.domain.value.BoardConfig;
 import com.joel.tictactoe.domain.value.GamePlayers;
 import com.joel.tictactoe.domain.value.GameStatus;
 import com.joel.tictactoe.domain.value.GameWinner;
@@ -99,7 +99,7 @@ public class GameTest {
         game.start();
 
        // when & then
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> game.move(BoardPositions.BOARD_MIN_POSITION - 1, 1));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> game.move(BoardConfig.BOARD_MIN_POSITION - 1, 1));
         assertEquals(ExceptionMessages.INVALID_MOVE_POSITION, exception.getMessage());
     }
 
@@ -110,7 +110,7 @@ public class GameTest {
         game.start();
 
         // when & then
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> game.move(BoardPositions.BOARD_MAX_POSITION + 1, 1));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> game.move(BoardConfig.BOARD_MAX_POSITION + 1, 1));
         assertEquals(ExceptionMessages.INVALID_MOVE_POSITION, exception.getMessage());
     }
 
@@ -141,6 +141,111 @@ public class GameTest {
         Movement movement = game.getMovements().get(0);
         assertEquals(1, movement.getX(), "Movement X coordinate should be recorded correctly");
         assertEquals(1, movement.getY(), "Movement Y coordinate should be recorded correctly");
+    }
+
+    @Test
+    void addMovement_shouldEndGameWhenPlayerWinsRow() {
+        // given
+        Game game = GameFactory.createMatchmakingGame();
+        game.start();
+
+        // when
+        // X will win with the first row
+        game.move(1, 1); // X
+        game.move(1, 2); // O
+        game.move(2, 1); // X
+        game.move(2, 2); // O
+        game.move(3, 1); // X wins
+
+        // then
+        assertEquals(GameStatus.FINISHED, game.getStatus());
+        assertEquals(GameWinner.X, game.getWinner());
+        assertFalse(game.isActive());
+    }
+
+    @Test
+    void addMovement_shouldEndGameWhenPlayerWinsColumn() {
+        // given
+        Game game = GameFactory.createMatchmakingGame();
+        game.start();
+
+        // when
+        // O will win with the second column
+        game.move(1, 1); // X
+        game.move(1, 2); // O
+        game.move(2, 1); // X
+        game.move(2, 2); // O
+        game.move(3, 3); // X
+        game.move(3, 2); // O wins
+
+        // then
+        assertEquals(GameStatus.FINISHED, game.getStatus());
+        assertEquals(GameWinner.O, game.getWinner());
+    }
+
+    @Test
+    void addMovement_shouldEndGameWhenPlayerWinsDiagonal() {
+        // given
+        Game game = GameFactory.createMatchmakingGame();
+        game.start();
+
+        // when
+        game.move(1, 1); // X
+        game.move(1, 2); // O
+        game.move(2, 2); // X
+        game.move(1, 3); // O
+        game.move(3, 3); // X wins diagonally
+
+        // then
+        assertEquals(GameStatus.FINISHED, game.getStatus());
+        assertEquals(GameWinner.X, game.getWinner());
+    }
+
+    @Test
+    void addMovement_shouldEndGameAsDrawAfterNineMovesAutomatically() {
+        // given
+        Game game = GameFactory.createMatchmakingGame();
+        game.start();
+
+        // when
+        // Sequence of moves that fills the board without any player winning
+        game.move(1, 1); // X
+        game.move(1, 2); // O
+        game.move(1, 3); // X
+        game.move(2, 1); // O
+        game.move(2, 3); // X
+        game.move(2, 2); // O
+        game.move(3, 1); // X
+        game.move(3, 3); // O
+        game.move(3, 2); // X last move -> should trigger draw
+
+        // then
+        assertEquals(GameStatus.FINISHED, game.getStatus(), "Game should be finished after 9 moves");
+        assertEquals(GameWinner.DRAW, game.getWinner(), "Game should end as DRAW when board is full");
+        assertFalse(game.isActive(), "Game should not be active after finishing");
+    }
+
+    @Test
+    void addMovement_shouldEndGameAsDrawWhenBoardIsFull() {
+        // given
+        Game game = GameFactory.createMatchmakingGame();
+        game.start();
+
+        // when
+        // Fill the board without any winner
+        game.move(1, 1); // X
+        game.move(1, 2); // O
+        game.move(1, 3); // X
+        game.move(2, 1); // O
+        game.move(2, 3); // X
+        game.move(2, 2); // O
+        game.move(3, 1); // X
+        game.move(3, 3); // O
+        game.move(3, 2); // X last move -> draw
+
+        // then
+        assertEquals(GameStatus.FINISHED, game.getStatus());
+        assertEquals(GameWinner.DRAW, game.getWinner());
     }
 
     @Test
@@ -188,4 +293,98 @@ public class GameTest {
         // then
         assertFalse(game.isActive(), "Game should not be active in FINISHED status");
     }
+
+    @Test
+    void checkPlayerWin_shouldReturnTrueForWinningRow() {
+        // given
+        Game game = GameFactory.createMatchmakingGame();
+        game.start();
+
+        // when
+        game.move(1, 1); // X
+        game.move(1, 2); // O
+        game.move(2, 1); // X
+        game.move(2, 2); // O
+        game.move(3, 1); // X
+
+        // then
+        assertTrue(game.checkPlayerWin(GamePlayers.X));
+        assertFalse(game.checkPlayerWin(GamePlayers.O));
+    }
+
+    @Test
+    void checkPlayerWin_shouldReturnTrueForWinningColumn() {
+        // given
+        Game game = GameFactory.createMatchmakingGame();
+        game.start();
+
+        // when
+
+        game.move(1, 1); // X
+        game.move(2, 1); // O
+        game.move(1, 2); // X
+        game.move(2, 2); // O
+        game.move(1, 3); // X
+
+        // then
+        assertTrue(game.checkPlayerWin(GamePlayers.X));
+    }
+
+    @Test
+    void checkPlayerWin_shouldReturnTrueForWinningDiagonal() {
+        // given
+        Game game = GameFactory.createMatchmakingGame();
+        game.start();
+
+        // when
+
+        game.move(1, 1); // X
+        game.move(1, 2); // O
+        game.move(2, 2); // X
+        game.move(1, 3); // O
+        game.move(3, 3); // X
+
+        // then
+        assertTrue(game.checkPlayerWin(GamePlayers.X));
+    }
+
+    @Test
+    void checkPlayerWin_shouldReturnTrueForWinningAntiDiagonal() {
+        // given
+        Game game = GameFactory.createMatchmakingGame();
+        game.start();
+
+        // when
+
+        game.move(1, 3); // X
+        game.move(1, 1); // O
+        game.move(2, 2); // X
+        game.move(2, 1); // O
+        game.move(3, 1); // X
+
+        // then
+        assertTrue(game.checkPlayerWin(GamePlayers.X));
+    }
+
+    @Test
+    void checkPlayerWin_shouldReturnFalseWhenNoWinner() {
+        // given
+        Game game = GameFactory.createMatchmakingGame();
+        game.start();
+
+        // when
+
+        game.move(1, 1); // X
+        game.move(1, 2); // O
+        game.move(2, 2); // X
+        game.move(3, 2); // O
+        game.move(2, 1); // X
+
+        // then
+        assertFalse(game.checkPlayerWin(GamePlayers.X));
+        assertFalse(game.checkPlayerWin(GamePlayers.O));
+    }
+
+
+
 }
