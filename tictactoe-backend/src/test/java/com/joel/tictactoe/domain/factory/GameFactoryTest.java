@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class GameFactoryTest {
 
     @Test
-    void testCreateMatchmakingGame() {
+    void createMatchmakingGame_returnsGameWithMatchmakingStatusAndCreatedAt() {
         // when
         var game = GameFactory.createMatchmakingGame();
 

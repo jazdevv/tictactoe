@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class GameTest {
 
     @Test
-    void testStartGame(){
+    void start_setsStatusToInProgress(){
         // given
         Game game = GameFactory.createMatchmakingGame();
         assertEquals(GameStatus.MATCHMAKING, game.getStatus(), "Initial game status should be MATCHMAKING");
@@ -24,7 +24,7 @@ public class GameTest {
     }
 
     @Test
-    void testSwitchTurn(){
+    void switchTurn_alternatesBetweenPlayersXAndO(){
         // given
         Game game = GameFactory.createMatchmakingGame();
         game.start();
@@ -44,7 +44,7 @@ public class GameTest {
     }
 
     @Test
-    void testEndGame(){
+    void end_setsStatusToFinishedAndAssignsWinner(){
         // given
         Game game = GameFactory.createMatchmakingGame();
         game.start();

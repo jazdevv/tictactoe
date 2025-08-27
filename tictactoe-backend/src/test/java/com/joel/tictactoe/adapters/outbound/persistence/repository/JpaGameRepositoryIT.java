@@ -28,7 +28,7 @@ public class JpaGameRepositoryIT {
     }
 
     @Test
-    void testSaveGameAndFindById() {
+    void save_persistsGameAndFindyById_returnsSavedGame() {
         // given
         Game game = GameFactory.createMatchmakingGame();
 
@@ -46,7 +46,7 @@ public class JpaGameRepositoryIT {
     }
 
     @Test
-    void testFindAll() {
+    void findAll_returnsAllSavedGames() {
         // given
         List<Game> initialGames = jpaGameRepository.findAll();
         assertTrue(initialGames.isEmpty(), "Repository should be empty initially");
@@ -64,7 +64,7 @@ public class JpaGameRepositoryIT {
     }
 
     @Test
-    void testFindFirstByStatus() {
+    void findFirstByStatus_returnsFirstMatchmakingGame() {
         // given
         Game game1 = GameFactory.createMatchmakingGame();
         Game game2 = GameFactory.createMatchmakingGame();
