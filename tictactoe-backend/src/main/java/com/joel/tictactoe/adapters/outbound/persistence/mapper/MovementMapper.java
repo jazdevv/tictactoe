@@ -7,6 +7,11 @@ public class MovementMapper {
 
     private MovementMapper() {}
 
+    /**
+     * Convert a MovementEntity to a Movement domain object.
+     * @param entity The MovementEntity from persistence.
+     * @return The Movement domain object.
+     */
     public static Movement toDomain(MovementEntity entity) {
         Movement movement = new Movement();
         movement.setId(entity.getId());
@@ -18,6 +23,11 @@ public class MovementMapper {
         return movement;
     }
 
+    /**
+     * Convert a Movement domain object to a MovementEntity for persistence.
+     * @param movement The Movement domain object.
+     * @return The MovementEntity for persistence.
+     */
     public static MovementEntity toEntity(Movement movement) {
         MovementEntity entity = new MovementEntity();
         entity.setId(movement.getId());

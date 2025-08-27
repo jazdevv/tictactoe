@@ -1,11 +1,9 @@
 package com.joel.tictactoe.adapters.inbound.rest;
 
-import com.joel.tictactoe.adapters.inbound.rest.dto.CreateGameResponse;
-import com.joel.tictactoe.adapters.inbound.rest.dto.GameStatusResponse;
-import com.joel.tictactoe.adapters.inbound.rest.dto.MakeMovementRequest;
-import com.joel.tictactoe.adapters.inbound.rest.dto.MakeMovementResponse;
+import com.joel.tictactoe.adapters.inbound.rest.dto.*;
 import com.joel.tictactoe.adapters.inbound.rest.exception.CustomException;
 import com.joel.tictactoe.adapters.inbound.rest.exception.ExceptionMessages;
+import com.joel.tictactoe.adapters.outbound.persistence.mapper.GameMapper;
 import com.joel.tictactoe.application.service.GameService;
 import com.joel.tictactoe.application.usecase.MakeMoveUseCase;
 import com.joel.tictactoe.domain.model.Game;
@@ -13,7 +11,9 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 public class GameController {
@@ -56,12 +56,9 @@ public class GameController {
         if(game.isEmpty()){
             throw new CustomException(ExceptionMessages.GAME_NOT_FOUND);
         }else{
-            Game g = game.get();
-            return ResponseEntity.ok(new GameStatusResponse(
-                    g.getStatus(),
-                    g.getCurrentTurn(),
-                    g.getWinner()
-            ));
+            Game gameInstance = game.get();
+
+            return ResponseEntity.ok(GameMapper.toGameStatusResponse(gameInstance));
         }
     }
 
