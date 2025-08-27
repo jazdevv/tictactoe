@@ -1,6 +1,7 @@
 import React from "react";
 import Cell from "@/components/atoms/Cell/Cell";
 import "./Board.scss";
+import { useTranslation } from "react-i18next";
 
 interface Move {
   playerId: "X" | "O";
@@ -16,6 +17,7 @@ interface BoardProps {
 }
 
 const Board: React.FC<BoardProps> = ({ moves, clickable, blocked = false, onMove }) => {
+  const { t } = useTranslation();
   const getCellValue = (x: number, y: number) => {
     const move = moves.find((m) => m.x === x && m.y === y);
     return move?.playerId;
@@ -37,7 +39,7 @@ const Board: React.FC<BoardProps> = ({ moves, clickable, blocked = false, onMove
           ))}
         </div>
       ))}
-      {blocked && <div className="overlay">Espere a su turno</div>}
+      {blocked && <div className="overlay">{t("waitForYourTurn")}</div>}
     </div>
   );
 };

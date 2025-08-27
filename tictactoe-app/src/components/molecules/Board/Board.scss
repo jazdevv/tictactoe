@@ -2,24 +2,24 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 0;
-  width: 240px;
+  gap: 0.75rem;
+  width: 400px;
 
   .board-row {
     display: flex;
-    gap: 0;
+    gap: 0.75rem;
   }
 
   &.blocked {
-    background-color: rgba(200, 200, 200, 0.3); // board más gris
-    pointer-events: none; // evita clicks en las celdas
+    pointer-events: none; 
 
     .overlay {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: rgba(50, 50, 50, 0.85); // fondo oscuro
+      background: var(--neutral-90); 
+      opacity: 0.85;
       color: #fff;
       padding: 1rem 2rem;
       border-radius: 0.5rem;

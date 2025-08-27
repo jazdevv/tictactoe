@@ -1,12 +1,14 @@
 .cell {
-  width: 80px;
-  height: 80px;
+  width: 120px;
+  height: 120px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #333;
+  background-color: var(--neutral-30);
   font-size: 2rem;
   transition: background 0.2s;
+  border-radius: 16px;
+  font-weight: 700;
 
   &.clickable {
     cursor: pointer;
@@ -18,5 +20,13 @@
 
   &.filled {
     cursor: default;
+  }
+
+  &.x-cell {
+    color: var(--primary-color);
+  }
+
+  &.o-cell {
+    color: var(--green);
   }
 }

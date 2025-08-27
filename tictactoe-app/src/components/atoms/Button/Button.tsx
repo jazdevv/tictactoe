@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import "./Button.scss";
 
 type ButtonProps = {
@@ -16,16 +16,13 @@ const Button: React.FC<ButtonProps> = ({
   onClick,
   className = "",
 }) => {
-  const [hover, setHover] = useState(false);
 
-  const classes = `button ${type} ${size} ${hover ? "hover" : ""} ${className}`;
+  const classes = `button ${type} ${size} ${className}`;
 
   return (
     <button
       onClick={onClick}
       className={classes}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
     >
       {value}
     </button>

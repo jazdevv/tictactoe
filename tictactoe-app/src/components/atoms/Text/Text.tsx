@@ -3,7 +3,7 @@ import "./Text.scss";
 
 type TextProps = {
   as?: React.ElementType;
-  type?: "base" | "primary";
+  type?: "base" | "primary" | "title";
   size?: "md" | "xl";
   value: string;
   className?: string;

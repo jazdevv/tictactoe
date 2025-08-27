@@ -3,6 +3,7 @@ import "./App.scss";
 import Text from "@/components/atoms/Text/Text";
 import Board from "@/components/molecules/Board/Board";
 import Button from "@/components/atoms/Button/Button";
+import { useTranslation } from "react-i18next";
 
 type Move = {
   playerId: "X" | "O";
@@ -23,6 +24,7 @@ function App() {
   const [gameId, setGameId] = useState<string | null>(null);
   const [moves, setMoves] = useState<Move[]>(initialMoves);
   const [nextPlayer, setNextPlayer] = useState<"X" | "O">("O");
+  const {t} = useTranslation();
 
   const handleMove = (x: number, y: number) => {
     // Add the new move
@@ -33,34 +35,36 @@ function App() {
 
   const handleSearchGame = () => {
     setSearchingGame(true);
-
-    setTimeout(() => {
-      setSearchingGame(false);
-      setGameId("123");
-    }, 200);
+    
+    
   };
 
   const gameFound = gameId !== null;
 
   return (
-    <>
-      {
-        searchingGame ? 
+    <div className="app-container">
+      {searchingGame ? (
         <div>searching ...</div>
-        : 
-        <>
-{gameFound ? (
-        <>
-          <Text value="Hello, World!" type="primary" />
-          <Board moves={moves} clickable={true} onMove={handleMove} blocked={true}/>
-        </>
       ) : (
-        <Button value="Search game" onClick={handleSearchGame} />
+        <>
+          {gameFound ? (
+            <>
+              <Board
+                moves={moves}
+                clickable={true}
+                onMove={handleMove}
+                blocked={true}
+              />
+            </>
+          ) : (
+            <>
+              <Text value={t("title")} type="title" />
+              <Button value={t("searchGame")} type="primary" onClick={handleSearchGame} />
+            </>
+          )}
+        </>
       )}
-      </>
-      }
-      
-    </>
+    </div>
   );
 }
 

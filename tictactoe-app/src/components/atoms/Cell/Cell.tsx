@@ -16,7 +16,7 @@ const Cell: React.FC<CellProps> = ({ x, y, value, clickable, onClick }) => {
     }
   };
 
-  const classes = `cell ${value ? "filled" : ""} ${clickable && !value ? "clickable" : ""}`;
+  const classes = `cell ${value ? "filled" : ""} ${clickable && !value ? "clickable" : ""} ${value === "X" ? "x-cell" : "o-cell"}`;
 
   return (
     <div onClick={handleClick} className={classes}>
