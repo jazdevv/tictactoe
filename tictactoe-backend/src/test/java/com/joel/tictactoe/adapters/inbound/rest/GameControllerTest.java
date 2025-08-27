@@ -4,10 +4,13 @@ import com.joel.tictactoe.adapters.inbound.rest.dto.CreateGameResponse;
 import com.joel.tictactoe.adapters.inbound.rest.dto.GameStatusResponse;
 import com.joel.tictactoe.adapters.inbound.rest.exception.ExceptionMessages;
 import com.joel.tictactoe.application.service.GameService;
+import com.joel.tictactoe.application.usecase.MakeMoveUseCase;
 import com.joel.tictactoe.domain.factory.GameFactory;
 import com.joel.tictactoe.domain.model.Game;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -16,11 +19,13 @@ class GameControllerTest {
 
     private GameService gameService;
     private GameController gameController;
+    private MakeMoveUseCase makeMoveUseCase;
 
     @BeforeEach
     void setUp() {
         gameService = mock(GameService.class);
-        gameController = new GameController(gameService);
+        makeMoveUseCase = mock(MakeMoveUseCase.class);
+        gameController = new GameController(gameService, makeMoveUseCase);
     }
 
     @Test
@@ -31,11 +36,14 @@ class GameControllerTest {
         when(gameService.startOrJoinGame()).thenReturn(mockGame);
 
         // when
-        CreateGameResponse result = gameController.createGame();
+        ResponseEntity<CreateGameResponse> result = gameController.createGame();
 
         // then
         assertNotNull(result, "The result should not be null");
-        assertEquals(mockGame.getId(), result.getMatchId(), "The returned game ID should match the mock game ID");
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+        CreateGameResponse body = result.getBody();
+        assertNotNull(body, "The body should not be null");
+        assertEquals(mockGame.getId(), body.getMatchId(), "The returned game ID should match the mock game ID");
         verify(gameService, times(1)).startOrJoinGame();
     }
 
@@ -79,13 +87,15 @@ class GameControllerTest {
         when(gameService.getGame(gameId)).thenReturn(java.util.Optional.of(mockGame));
 
         // when
-        GameStatusResponse result = gameController.getGameStatus(gameId);
+        ResponseEntity<GameStatusResponse> result = gameController.getGameStatus(gameId);
 
         // then
         assertNotNull(result, "The result should not be null");
-        assertEquals(mockGame.getStatus(), result.getStatus(), "The returned status should match the mock game status");
-        assertEquals(mockGame.getCurrentTurn(), result.getCurrentTurn(), "The returned current turn should match the mock game current turn");
-        assertEquals(mockGame.getWinner(), result.getWinner(), "The returned winner should match the mock game winner");
+        GameStatusResponse body = result.getBody();
+        assertNotNull(body, "The body should not be null");
+        assertEquals(mockGame.getStatus(), body.getStatus(), "The returned status should match the mock game status");
+        assertEquals(mockGame.getCurrentTurn(), body.getCurrentTurn(), "The returned current turn should match the mock game current turn");
+        assertEquals(mockGame.getWinner(), body.getWinner(), "The returned winner should match the mock game winner");
         verify(gameService, times(1)).getGame(gameId);
     }
 }

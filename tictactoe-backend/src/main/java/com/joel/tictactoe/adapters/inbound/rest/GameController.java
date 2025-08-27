@@ -2,14 +2,16 @@ package com.joel.tictactoe.adapters.inbound.rest;
 
 import com.joel.tictactoe.adapters.inbound.rest.dto.CreateGameResponse;
 import com.joel.tictactoe.adapters.inbound.rest.dto.GameStatusResponse;
+import com.joel.tictactoe.adapters.inbound.rest.dto.MakeMovementRequest;
+import com.joel.tictactoe.adapters.inbound.rest.dto.MakeMovementResponse;
 import com.joel.tictactoe.adapters.inbound.rest.exception.CustomException;
 import com.joel.tictactoe.adapters.inbound.rest.exception.ExceptionMessages;
 import com.joel.tictactoe.application.service.GameService;
+import com.joel.tictactoe.application.usecase.MakeMoveUseCase;
 import com.joel.tictactoe.domain.model.Game;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -17,10 +19,14 @@ import java.util.Optional;
 public class GameController {
 
     private final GameService gameService;
+    private final MakeMoveUseCase makeMoveUseCase;
 
     public GameController(
-            GameService gameService) {
+            GameService gameService,
+            MakeMoveUseCase makeMoveUseCase)
+    {
         this.gameService = gameService;
+        this.makeMoveUseCase = makeMoveUseCase;
     }
 
     /**
@@ -28,9 +34,9 @@ public class GameController {
      * @return
      */
     @PostMapping("/create")
-    public CreateGameResponse createGame() {
+    public ResponseEntity<CreateGameResponse> createGame() {
         Game game = gameService.startOrJoinGame();
-        return new CreateGameResponse(game.getId());
+        return ResponseEntity.ok(new CreateGameResponse(game.getId()));
     }
 
     /**
@@ -40,7 +46,7 @@ public class GameController {
      * @throws Exception if the game is not found.
      */
     @GetMapping("/status")
-    public GameStatusResponse getGameStatus(@RequestParam(required = false) String gameId) throws Exception {
+    public ResponseEntity<GameStatusResponse> getGameStatus(@RequestParam(required = false) String gameId) throws Exception {
         if (gameId == null) {
             throw new CustomException(ExceptionMessages.GAME_ID_REQUIRED);
         }
@@ -51,11 +57,18 @@ public class GameController {
             throw new CustomException(ExceptionMessages.GAME_NOT_FOUND);
         }else{
             Game g = game.get();
-            return new GameStatusResponse(
-                g.getStatus(),
+            return ResponseEntity.ok(new GameStatusResponse(
+                    g.getStatus(),
                     g.getCurrentTurn(),
                     g.getWinner()
-            );
+            ));
         }
+    }
+
+    @PostMapping("/move")
+    public ResponseEntity<Void> makeMove(@Valid @RequestBody MakeMovementRequest request) throws Exception {
+        this.makeMoveUseCase.execute(request);
+
+        return ResponseEntity.noContent().build();
     }
 }
