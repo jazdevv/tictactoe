@@ -1,12 +1,15 @@
-package com.joel.tictactoe.adapters.inbound.rest;
+package com.joel.tictactoe.adapters.inbound.rest.exception;
 
-import com.joel.tictactoe.adapters.inbound.rest.exception.CustomException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Global exception handler to catch unhandled exceptions and log them.
@@ -40,7 +43,7 @@ public class GlobalExceptionHandler {
      * @return the exception message
      */
     @ExceptionHandler({CustomException.class, IllegalStateException.class, IllegalArgumentException.class})
-    public ResponseEntity<String> handleCustomException(CustomException ex) {
+    public ResponseEntity<String> handleCustomException(Exception ex) {
         // Log full stack trace
         log.error("Custom exception caught: ", ex);
 
@@ -48,5 +51,30 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(ex.getMessage());
+    }
+
+    /**
+     * Handle validation exceptions.
+     *
+     * @param ex the validation exception
+     * @return a map of field errors
+     */
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, String>> handleValidationExceptions(
+            MethodArgumentNotValidException ex) {
+
+        Map<String, String> errors = new HashMap<>();
+
+        // Extract each field error
+        ex.getBindingResult().getFieldErrors().forEach(error -> {
+            String fieldName = error.getField();
+            String message = error.getDefaultMessage();
+            errors.put(fieldName, message);
+        });
+
+        // Log the validation errors
+        log.error("Validation errors: {}", errors);
+
+        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 }

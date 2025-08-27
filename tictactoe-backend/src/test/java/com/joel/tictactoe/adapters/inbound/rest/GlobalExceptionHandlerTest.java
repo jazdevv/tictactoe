@@ -1,6 +1,7 @@
 package com.joel.tictactoe.adapters.inbound.rest;
 
 import com.joel.tictactoe.adapters.inbound.rest.exception.CustomException;
+import com.joel.tictactoe.adapters.inbound.rest.exception.GlobalExceptionHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
