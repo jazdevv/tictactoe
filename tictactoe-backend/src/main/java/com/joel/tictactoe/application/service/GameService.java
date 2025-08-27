@@ -48,7 +48,33 @@ public class GameService {
      * @param id The ID of the game to retrieve.
      * @return An Optional containing the game if found, or empty if not found.
      */
-    public Optional<Game> getGame(String id) {
+    public Optional<Game> findById(String id) {
         return gameRepository.findById(id);
+    }
+
+    /**
+     * Retrieves all games.
+     *
+     * @return A list of all games.
+     */
+    public List<Game> getAllGames() {
+        return gameRepository.findAll();
+    }
+
+    /**
+     * Saves a game.
+     *
+     * @param game The game to save.
+     * @return The saved game.
+     */
+    public Game save(Game game) {
+        return gameRepository.save(game);
+    }
+
+    /**
+     * Deletes all games.
+     */
+    public void deleteAllGames() {
+        gameRepository.deleteAll();
     }
 }

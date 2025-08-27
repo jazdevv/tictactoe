@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -54,12 +53,12 @@ class GameServiceIT {
     }
 
     @Test
-    void getGame_returnsGameById() {
+    void findByIdById() {
         // given
         Game savedGame = gameRepository.save(GameFactory.createMatchmakingGame());
 
         // when
-        Optional<Game> foundGame = gameService.getGame(savedGame.getId());
+        Optional<Game> foundGame = gameService.findById(savedGame.getId());
 
         // then
         assertTrue(foundGame.isPresent(), "Game should be found by ID");

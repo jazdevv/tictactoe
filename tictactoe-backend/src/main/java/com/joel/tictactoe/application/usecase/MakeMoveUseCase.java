@@ -1,20 +1,20 @@
 package com.joel.tictactoe.application.usecase;
 
 import com.joel.tictactoe.adapters.inbound.rest.dto.MakeMovementRequest;
+import com.joel.tictactoe.application.service.GameService;
 import com.joel.tictactoe.exception.CustomException;
 import com.joel.tictactoe.exception.ExceptionMessages;
 import com.joel.tictactoe.domain.model.Game;
-import com.joel.tictactoe.domain.repository.GameRepository;
 import com.joel.tictactoe.domain.value.GamePlayers;
 import org.springframework.stereotype.Service;
 
 
 @Service
 public class MakeMoveUseCase {
-    private final GameRepository gameRepository;
+    private final GameService gameService;
 
-    public MakeMoveUseCase(GameRepository gameRepository) {
-        this.gameRepository = gameRepository;
+    public MakeMoveUseCase(GameService gameService) {
+        this.gameService = gameService;
     }
 
     public void execute(MakeMovementRequest request) {
@@ -23,7 +23,7 @@ public class MakeMoveUseCase {
     }
 
     public void execute(String gameId, GamePlayers playerId, int x, int y) throws CustomException {
-        Game game = gameRepository.findById(gameId).orElseThrow(() -> new CustomException(ExceptionMessages.GAME_NOT_FOUND));
+        Game game = gameService.findById(gameId).orElseThrow(() -> new CustomException(ExceptionMessages.GAME_NOT_FOUND));
 
         // Validate if the game is active
         if(!game.isActive()){
@@ -37,7 +37,6 @@ public class MakeMoveUseCase {
 
         game.move(x, y);
 
-        gameRepository.save(game);
-
+        gameService.save(game);
     }
 }
