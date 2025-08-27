@@ -5,14 +5,16 @@ import com.joel.tictactoe.domain.value.BoardConfig;
 import com.joel.tictactoe.domain.value.GamePlayers;
 import com.joel.tictactoe.domain.value.GameStatus;
 import com.joel.tictactoe.domain.value.GameWinner;
+import com.joel.tictactoe.util.LogMessages;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-
+@Slf4j
 @Getter
 @Setter
 public class Game {
@@ -41,6 +43,7 @@ public class Game {
     public void start() {
         this.status = GameStatus.IN_PROGRESS;
         this.currentTurn = FIRST_PLAYER;
+        log.info(LogMessages.GAME_STARTED, this.id);
     }
 
     /**
@@ -84,6 +87,7 @@ public class Game {
         movement.setCreatedAt(LocalDateTime.now());
 
         addMovement(movement);
+        log.info(LogMessages.MOVEMENT_ADDED, movement, this.currentTurn);
     }
 
     /**
@@ -96,11 +100,13 @@ public class Game {
                 || movement.getX() > BoardConfig.BOARD_MAX_POSITION
                 || movement.getY() < BoardConfig.BOARD_MIN_POSITION
                 || movement.getY() > BoardConfig.BOARD_MAX_POSITION) {
+            log.info(LogMessages.INVALID_MOVE, movement.getX(), movement.getY(), movement.getPlayerId(), this.id);
             throw new IllegalArgumentException(ExceptionMessages.INVALID_MOVE_POSITION);
         }
 
         boolean exists = hasMovementAt(movement.getX(), movement.getY());
         if (exists) {
+            log.info(LogMessages.INVALID_MOVE, movement.getX(), movement.getY(), movement.getPlayerId(), this.id);
             throw new IllegalArgumentException(ExceptionMessages.POSITION_ALREADY_TAKEN);
         }
 
@@ -109,9 +115,11 @@ public class Game {
         boolean playerWin = checkPlayerWin(movement.getPlayerId());
         if (playerWin) {
             end(movement.getPlayerId() == GamePlayers.X ? GameWinner.X : GameWinner.O);
+            log.info(LogMessages.GAME_WON, this.id, this.winner);
         }else{
             if(movements.size() == BoardConfig.MAX_MOVEMENTS){
                 end(GameWinner.DRAW);
+                log.info(LogMessages.GAME_DRAW);
             }else{
                 // Switch turn only if the game is not finished
                 switchTurn();

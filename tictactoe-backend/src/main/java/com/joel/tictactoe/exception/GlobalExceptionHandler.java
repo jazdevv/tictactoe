@@ -44,8 +44,6 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler({CustomException.class, IllegalStateException.class, IllegalArgumentException.class})
     public ResponseEntity<String> handleCustomException(Exception ex) {
-        // Log full stack trace
-        log.error("Custom exception caught: ", ex);
 
         // Return the exception message to client
         return ResponseEntity
@@ -71,9 +69,6 @@ public class GlobalExceptionHandler {
             String message = error.getDefaultMessage();
             errors.put(fieldName, message);
         });
-
-        // Log the validation errors
-        log.error("Validation errors: {}", errors);
 
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }

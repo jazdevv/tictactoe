@@ -4,6 +4,8 @@ import com.joel.tictactoe.domain.model.Game;
 import com.joel.tictactoe.domain.factory.GameFactory;
 import com.joel.tictactoe.domain.value.GameStatus;
 import com.joel.tictactoe.domain.repository.GameRepository;
+import com.joel.tictactoe.util.LogMessages;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,6 +14,7 @@ import java.util.Optional;
 /**
  * Service class for managing games.
  */
+@Slf4j
 @Service
 public class GameService {
 
@@ -29,6 +32,7 @@ public class GameService {
     public Game startOrJoinGame() {
         Optional<Game> matchmakingGame = gameRepository.findFirstByStatus(GameStatus.MATCHMAKING);
         Game game;
+        log.info(LogMessages.ENTERING_MATHCHMAKING);
 
         if (matchmakingGame.isPresent()) {
             // Join the existing matchmaking game
