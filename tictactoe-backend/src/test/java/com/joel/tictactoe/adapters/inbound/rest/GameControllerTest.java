@@ -1,9 +1,7 @@
 package com.joel.tictactoe.adapters.inbound.rest;
 
 import com.joel.tictactoe.adapters.inbound.rest.dto.CreateGameResponse;
-import com.joel.tictactoe.adapters.inbound.rest.dto.GameStatusResponse;
 import com.joel.tictactoe.application.usecase.GetGameStatusUseCase;
-import com.joel.tictactoe.exception.ExceptionMessages;
 import com.joel.tictactoe.application.service.GameService;
 import com.joel.tictactoe.application.usecase.MakeMoveUseCase;
 import com.joel.tictactoe.domain.factory.GameFactory;
