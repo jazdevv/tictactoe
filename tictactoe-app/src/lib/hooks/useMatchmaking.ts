@@ -11,6 +11,10 @@ interface UseMatchmaking {
   createMatch: () => Promise<void>;
 }
 
+/**
+ * Custom hook for matchmaking in the game.
+ * @returns {Object} - The matchmaking state and actions.
+ */
 export function useMatchmaking(): UseMatchmaking {
   const [data, setData] = useState<MatchmakingResponseDTO | null>(null);
   const [loading, setLoading] = useState(false);
