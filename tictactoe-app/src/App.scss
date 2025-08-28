@@ -4,4 +4,15 @@
   justify-content: center;
   height: 80vh;
   flex-direction: column;
+
+  img {
+    background-color: #f8f8f8;
+  }
+
+  .searching-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
 }

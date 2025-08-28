@@ -1,5 +1,10 @@
 {
   "title" : "Joel TicTacToe, lets start!",
   "waitForYourTurn": "Wait for your turn",
-  "searchGame": "Search game"
+  "searchGame": "Search game",
+  "searchingGame": "Searching for an opponent...",
+  "unknownError": "Unknown error occurred",
+  "yourTurn": "Your Move!",
+  "opponentTurn": "Opponent is thinking...",
+  "gameFinished": "Game finished!"
 }
