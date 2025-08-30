@@ -33,11 +33,11 @@ public class StartOrJoinGameUseCase {
             // Join the existing matchmaking game
             game = matchmakingGame.get();
             game.start();
-            playerId = GamePlayers.X;
+            playerId = GamePlayers.O;
         }else{
             // No matchmaking game available, create a new game
             game = GameFactory.createMatchmakingGame();
-            playerId = GamePlayers.O;
+            playerId = GamePlayers.X;
         }
 
         game = gameService.save(game);
