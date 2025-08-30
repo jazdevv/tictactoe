@@ -26,14 +26,14 @@ public class GlobalExceptionHandler {
      * @return a generic error response
      */
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleAllExceptions(Exception ex) {
+    public ResponseEntity<ExceptionResponse> handleAllExceptions(Exception ex) {
         // Log full stack trace
         log.error("Unhandled exception caught: ", ex);
 
         // Return generic message to client
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Unexpected issue occurred");
+                .body(new ExceptionResponse(ExceptionStatusMessage.UNEXPECTED_ERROR, ExceptionMessages.UNEXPECTED_ERROR));
     }
 
     /**
@@ -42,13 +42,24 @@ public class GlobalExceptionHandler {
      * @param ex the custom exception
      * @return the exception message
      */
-    @ExceptionHandler({CustomException.class, IllegalStateException.class, IllegalArgumentException.class})
-    public ResponseEntity<String> handleCustomException(Exception ex) {
-
-        // Return the exception message to client
+    @ExceptionHandler({IllegalStateException.class, IllegalArgumentException.class})
+    public ResponseEntity<ExceptionResponse> handleIllegalStateOrArgumentExceptionCustomException(Exception ex) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(ex.getMessage());
+                .body(new ExceptionResponse(ExceptionStatusMessage.UNEXPECTED_ERROR, ex.getMessage()));
+    }
+
+    /**
+     * Handle custom exceptions.
+     *
+     * @param ex the custom exception
+     * @return the exception message
+     */
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<ExceptionResponse> handleCustomException(CustomException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ExceptionResponse(ex.getStatusMessage(), ex.getMessage()));
     }
 
     /**
