@@ -1,7 +1,12 @@
 package com.joel.tictactoe.exception;
 
+import lombok.Getter;
+
+@Getter
 public class CustomException extends RuntimeException {
-    public CustomException(String message) {
+    String statusMessage;
+    public CustomException(String statusMessage, String message) {
         super(message);
+        this.statusMessage = statusMessage;
     }
 }
