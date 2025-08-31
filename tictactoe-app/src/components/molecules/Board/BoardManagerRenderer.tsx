@@ -45,12 +45,17 @@ export const BoardManagerRenderer = ({ data, onMove, playerId }: Props) => {
     case GameStatus.FINISHED:
       return (
         <div className="game-finished">
-          <Text value={t("gameFinished")} type="title" />
+          {
+            data.winner == "DRAW"
+              ? <Text value={t("gameDraw")} type="title" />
+              : <Text value={t("gameWon", { player: data.winner })} type="title" />
+          }
           <Board
             moves={data?.movements || []}
             clickable={false}
             onMove={onMove}
             blocked={true}
+            finished={true}
           />
         </div>
       );

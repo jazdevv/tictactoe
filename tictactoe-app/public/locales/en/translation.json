@@ -6,5 +6,7 @@
   "unknownError": "Unknown error occurred",
   "yourTurn": "Your Move!",
   "opponentTurn": "Opponent is thinking...",
-  "gameFinished": "Game finished!"
+  "gameFinished": "Game finished!",
+  "gameDraw": "It's a draw!",
+  "gameWon": "{{player}} has won!"
 }

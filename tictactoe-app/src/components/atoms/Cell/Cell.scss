@@ -24,9 +24,19 @@
 
   &.x-cell {
     color: var(--primary-color);
+
+    &.highlight {
+      color: var(--white);
+      background: var(--primary-color);
+    }
   }
 
   &.o-cell {
     color: var(--green);
+
+    &.highlight {
+      color: var(--white);
+      background: var(--green);
+    }
   }
 }
