@@ -8,9 +8,9 @@
     "skipLibCheck": true,
 
     /* Bundler mode */
+    "esModuleInterop": true,
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
-    "verbatimModuleSyntax": true,
     "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
@@ -25,7 +25,10 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
-    }
+    },
+
+    /* ✅ Add this for Jest type support */
+    "types": ["jest", "node"]
   },
-  "include": ["src"]
+  "include": ["src", "jest.setup.ts"]  // ✅ make sure setup file is included
 }
