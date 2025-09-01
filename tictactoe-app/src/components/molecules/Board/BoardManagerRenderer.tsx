@@ -1,4 +1,3 @@
-// GameStatusRenderer.tsx
 import Board from "./Board";
 import Text from "@/components/atoms/Text/Text";
 import searching from "@/assets/searching.svg";

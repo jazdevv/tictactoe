@@ -15,7 +15,7 @@ export function getWinningCells(moves: Movement[]): CellPosition[] {
     board[y - 1][x - 1] = playerId;
   });
 
-  const lines = [
+  const lines: CellPosition[][] = [
     // Rows
     [{ x: 1, y: 1 }, { x: 2, y: 1 }, { x: 3, y: 1 }],
     [{ x: 1, y: 2 }, { x: 2, y: 2 }, { x: 3, y: 2 }],
