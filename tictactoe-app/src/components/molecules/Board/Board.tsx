@@ -4,6 +4,8 @@ import "./Board.scss";
 import { useTranslation } from "react-i18next";
 import { getWinningCells } from "./utils";
 import type { Movement } from "@/lib/types/Movement";
+import { BoardCoordinateValues } from "@/lib/const/BoardCoordinateValues";
+import { BoardCoordinateValuesType } from "@/lib/types/BoardCoordinateValuesType";
 
 
 interface BoardProps {
@@ -11,26 +13,26 @@ interface BoardProps {
   finished?: boolean;
   clickable: boolean;
   blocked?: boolean; // nuevo prop
-  onMove: (x: number, y: number) => void;
+  onMove: (x: BoardCoordinateValuesType, y: BoardCoordinateValuesType) => void;
 }
 
 const Board: React.FC<BoardProps> = ({ moves, clickable, blocked = false, finished = false, onMove }) => {
   const { t } = useTranslation();
-  const getCellValue = (x: number, y: number) => {
+  const getCellValue = (x: BoardCoordinateValuesType, y: BoardCoordinateValuesType) => {
     const move = moves.find((m) => m.x === x && m.y === y);
     return move?.playerId;
   };
 
   const winningCells = useMemo(() => (finished ? getWinningCells(moves) : []), [moves, finished]);
 
-  const isWinningCell = (x: number, y: number) =>
+  const isWinningCell = (x: BoardCoordinateValuesType, y: BoardCoordinateValuesType) =>
     winningCells.some((cell) => cell.x === x && cell.y === y);
 
   return (
     <div className={`board ${blocked ? "blocked" : ""}`}>
-      {[1, 2, 3].map((y) => (
+      {BoardCoordinateValues.map((y) => (
         <div className="board-row" key={y}>
-          {[1, 2, 3].map((x) => (
+          {BoardCoordinateValues.map((x) => (
             <Cell
               key={`${x}-${y}`}
               x={x}

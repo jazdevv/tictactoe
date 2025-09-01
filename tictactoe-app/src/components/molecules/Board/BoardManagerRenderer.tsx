@@ -7,10 +7,11 @@ import { useTranslation } from "react-i18next";
 import { GameStatus } from "@/lib/types/GameStatus";
 import type { PlayerType } from "@/lib/types/PlayerType";
 import './BoardManagerRenderer.scss';
+import { BoardCoordinateValuesType } from "@/lib/types/BoardCoordinateValuesType";
 
 type Props = {
   data?: GameResponseDTO;
-  onMove: (x: number, y: number) => void;
+  onMove: (x: BoardCoordinateValuesType, y: BoardCoordinateValuesType) => void;
   playerId: PlayerType;
 };
 

@@ -2,12 +2,13 @@ import useSWR, { mutate } from "swr";
 import { ENDPOINTS } from "@/lib/api/endpoints";
 import { api } from "@/lib/api/apiClient";
 import type { GameResponseDTO } from "@/lib/types/dto/GameResponseDTO";
+import type { BoardCoordinateValuesType } from "@/lib/types/BoardCoordinateValuesType";
 
 interface UseGameStatus {
   data: GameResponseDTO | undefined;
   error: string | null;
   loading: boolean;
-  makeMove: (x: number, y: number, playerId: string, matchId: string) => Promise<void>;
+  makeMove: (x: BoardCoordinateValuesType, y: BoardCoordinateValuesType, playerId: string, matchId: string) => Promise<void>;
 }
 
 const fetcher = (url: string) => api.get<GameResponseDTO>(url);
@@ -34,8 +35,8 @@ export function useGameStatus(gameId: string): UseGameStatus {
    * @param matchId - The ID of the match.
    */
   const makeMove = async (
-    x: number,
-    y: number,
+    x: BoardCoordinateValuesType,
+    y: BoardCoordinateValuesType,
     playerId: string,
     matchId: string
   ) => {

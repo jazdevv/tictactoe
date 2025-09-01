@@ -1,13 +1,15 @@
 import React from "react";
 import "./Cell.scss";
+import { type MovementValuesType } from "@/lib/types/MovementValuesType";
+import { BoardCoordinateValuesType } from "@/lib/types/BoardCoordinateValuesType";
 
 interface CellProps {
-  x: number;
-  y: number;
-  value?: "X" | "O";
+  x: BoardCoordinateValuesType;
+  y: BoardCoordinateValuesType;
+  value?: MovementValuesType;
   highlight?: boolean;
   clickable: boolean;
-  onClick: (x: number, y: number) => void;
+  onClick: (x: BoardCoordinateValuesType, y: BoardCoordinateValuesType) => void;
 }
 
 const Cell: React.FC<CellProps> = ({
